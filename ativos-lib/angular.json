@@ -1,0 +1,170 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "ativos-lib": {
+      "root": "projects/ativos-lib",
+      "sourceRoot": "projects/ativos-lib/src",
+      "projectType": "library",
+      "prefix": "ais",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ativos-lib/tsconfig.lib.json",
+            "project": "projects/ativos-lib/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ativos-lib/src/test.ts",
+            "tsConfig": "projects/ativos-lib/tsconfig.spec.json",
+            "karmaConfig": "projects/ativos-lib/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ativos-lib/tsconfig.lib.json",
+              "projects/ativos-lib/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "ativos-tester": {
+      "root": "projects/ativos-tester/",
+      "sourceRoot": "projects/ativos-tester/src",
+      "projectType": "application",
+      "prefix": "app",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/ativos-tester",
+            "index": "projects/ativos-tester/src/index.html",
+            "main": "projects/ativos-tester/src/main.ts",
+            "polyfills": "projects/ativos-tester/src/polyfills.ts",
+            "tsConfig": "projects/ativos-tester/tsconfig.app.json",
+            "assets": [
+              "projects/ativos-tester/src/favicon.ico",
+              "projects/ativos-tester/src/assets"
+            ],
+            "styles": [
+              "projects/ativos-tester/src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/ativos-tester/src/environments/environment.ts",
+                  "with": "projects/ativos-tester/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "ativos-tester:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ativos-tester:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ativos-tester:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ativos-tester/src/test.ts",
+            "polyfills": "projects/ativos-tester/src/polyfills.ts",
+            "tsConfig": "projects/ativos-tester/tsconfig.spec.json",
+            "karmaConfig": "projects/ativos-tester/karma.conf.js",
+            "styles": [
+              "projects/ativos-tester/src/styles.css"
+            ],
+            "scripts": [],
+            "assets": [
+              "projects/ativos-tester/src/favicon.ico",
+              "projects/ativos-tester/src/assets"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ativos-tester/tsconfig.app.json",
+              "projects/ativos-tester/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "ativos-tester-e2e": {
+      "root": "projects/ativos-tester-e2e/",
+      "projectType": "application",
+      "prefix": "",
+      "architect": {
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/ativos-tester-e2e/protractor.conf.js",
+            "devServerTarget": "ativos-tester:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "ativos-tester:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "projects/ativos-tester-e2e/tsconfig.e2e.json",
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "ativos-lib"
+}

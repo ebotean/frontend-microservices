@@ -1,0 +1,24 @@
+<mat-toolbar>
+  
+  <h4>Aplicação Consumer</h4>
+  
+  <span class="space-filling-span"></span>
+
+  <button mat-icon-button [matMenuTriggerFor]="menu">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button [routerLink]="['/']" mat-menu-item>
+      <mat-icon>home</mat-icon>
+      <span>Home page</span>
+    </button>
+    <button [routerLink]="['/ativos']" mat-menu-item>
+      <mat-icon>attach_money</mat-icon>
+      <span>Contexto de Ativos</span>
+    </button>
+    <button [routerLink]="['/passivos']" mat-menu-item>
+      <mat-icon>money_off</mat-icon>
+      <span>Contexto de Passivos</span>
+    </button>
+  </mat-menu>
+</mat-toolbar>

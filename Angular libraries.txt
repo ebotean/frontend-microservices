@@ -1,0 +1,61 @@
+Angular libraries
+
+Libraries existem para implementar, melhorar, incrementar ou extender funcionalidades de uso comum em aplicações Angular. 
+Dessa forma, é possível solucionar um problema comum em diversos apps ou implementar um componente reutilizado.
+Exemplo: botão de confirmação, seção de website
+
+ng generate library lib-exemplo
+
+A utilização desse comando atualiza também o angular.json (arquivo de configuração do workspace)
+Na chave "projects", a lib criada (lib-exemplo) é adicionada, com configurações específicas de library.
+
+A partir daí, os comandos disponíveis para essa library são:
+ng build lib-exemplo
+ng test lib-exemplo
+ng lint lib-exemplo
+
+Repare que a library não poderá ser "servida", mas sim buildada e reutilizada em alguma aplicação Angular.
+
+Para que uma funcionalidade de aplicação possa ser migrada para uma library existem algumas considerações a serem levadas em conta:
+
+- Componentes e pipes devem ser "stateless", ou seja, não dependem de variáveis externas. No caso de uma dessas declarações depender de estado, uma análise deve ser conduzida, verificando se o estado será gerenciado pela aplicação ou pela library
+
+- Quaisquer subscriptions (produtos do Observable.subscribe) devem ser devidamente destruídas no lifecycle do componente. Isso porque o clean up não é automático
+
+- Serviços devem estar estruturados no formato Tree-Shakable (deixados de fora do bundle na hora do build, caso não sejam referenciados). Idealmente isso já deveria ocorrer pré-bundle, mas como um serviço pode ser injetado a qualquer momento com
+	injector.get(Service);
+o Angular não consegue identificar os pontos onde essa situação ocorre e acaba incluindo o serviço no bundle.
+
+- Serviços globais devem ser incluídos nos NgModules utilizando os padrões forRoot() e forChild() do RouterModule.
+
+- Dependencias internas devem ser analisadas:
+	- Verificar se as classes têm dependências que também precisam ser migradas. 
+	- Se existe a dependência de um serviço que também precisa ser migrado
+	- Se a library tem dependências externas (Angular Material, Bootstrap, momentjs, Toastr etc)
+
+- Rotas devem estar corretamente estruturadas em NgModules, para garantir o lazy-loading. Utilizar os forRoot() e forChild() do RouterModule. Cada lib deve ter suas rotas previamente definidas
+
+Para a utilização do conceito de micro-frontends, será necessária a utilização do Angular 6+. Isso porque a partir da versão 6, o Angular CLI passou por um update que implementou o ng-packagr, uma ferramenta que permite o empacotamento de libraries. 
+
+Dessa forma, uma library pode ser entendida como uma "sub-aplicação" Angular (essa terminologia é um entendimento meu e não está citada em qualquer documentação oficial), podendo ser posteriormente plugada em uma aplicação (Consumer)
+
+Angular Package Format: https://docs.google.com/document/d/1CZC2rcpxffTDfRDs6p1cfbmKNLA6x5O-NtkJglDaBVs/preview
+
+Neste formato de micro-frontends utilizando libraries, ao criar a aplicação, teremos trẽs projetos no workspace:
+	- library project: contendo componentes e serviços reutilizáveis, podendo ser publicados (no npm por exemplo)
+	- application: contém a aplicação angular em si, geralmente utilizada para testar a library ou demonstrar seu funcionamento.
+	- e2e: responsável pelos testes end-to-end, incluídos por default em qualquer projeto Angular
+
+
+O que foi feito na Demo:
+	1. criação de dois projetos, estruturados como libraries (producers)
+		. cada um destes projetos contém:
+			1. a library a ser utilizada;
+			2. uma aplicação interna responsável pelos testes unitários da lib;
+			3. uma aplicação direcionada para os testes e2e da library.
+	
+	2. criação de um projeto consumer, responsável pela utilização das duas libraries previamente criadas
+		- página inicial com menu para a seleção de qual componente utilizar
+			- opção A: carregamento da lib foo
+			- opção B: carregamento da lib bar
+		- carregamento de libs em formato lazy load (requisito não funcional)
